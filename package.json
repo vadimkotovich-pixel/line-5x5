@@ -1,8 +1,14 @@
 {
-  "name": "ttt-5x5-landing",
+  "name": "line-5x5",
   "version": "1.0.0",
   "private": true,
-  "description": "Мини-лэндинг с игрой «Линия 5x5»: три в ряд зачеркиваются, клетки блокируются, счёт по очкам. Игра против компьютера.",
+  "description": "Мини-лэндинг с игрой «Линия 5×5»: три в ряд зачеркиваются и приносят очки, клетки блокируются навсегда, побеждает тот, у кого очков больше. Игра против компьютера.",
+  "license": "MIT",
+  "homepage": "https://vadimkotovich-pixel.github.io/line-5x5/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vadimkotovich-pixel/line-5x5.git"
+  },
   "type": "commonjs",
   "scripts": {
     "test": "node --test --test-isolation=none tests/rules.test.js tests/ai.test.js tests/ui-contract.test.js tests/dom.test.js",
