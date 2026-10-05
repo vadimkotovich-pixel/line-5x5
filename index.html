@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#070b16" />
+    <title>Линия 5×5 — три в ряд, счёт по очкам</title>
+    <meta
+      name="description"
+      content="Мини-игра против компьютера: поле 5×5, три символа подряд зачеркиваются и приносят очко, зачеркнутые клетки блокируются навсегда. Побеждает тот, у кого больше очков."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23070b16'/%3E%3Cpath d='M8 8l7 7-7 7' stroke='%2335e0ff' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='23' cy='20' r='4' stroke='%23ff5fa2' stroke-width='3' fill='none'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#game">Перейти к игре</a>
+
+    <header class="site-header">
+      <div class="wrap site-header__inner">
+        <a class="brand" href="#top">
+          <span class="brand__mark" aria-hidden="true">
+            <span class="brand__x">✕</span><span class="brand__o">○</span>
+          </span>
+          <span class="brand__text">Линия <b>5×5</b></span>
+        </a>
+        <nav class="site-nav" aria-label="Разделы страницы">
+          <a href="#rules">Правила</a>
+          <a href="#scoring">Очки</a>
+          <a href="#strategy">Стратегия</a>
+        </nav>
+        <a class="btn btn--small" href="#game">Играть</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- ЭКРАН 1: игра -->
+      <section class="hero wrap">
+        <div class="hero__copy">
+          <p class="eyebrow">Крестики-нолики, которые не заканчиваются ничьей</p>
+          <h1>
+            Собери <span class="grad">три в ряд</span> — и зачеркни линию.
+          </h1>
+          <p class="lead">
+            Поле 5×5, вы играете <b class="mark-x">✕</b> против компьютера <b class="mark-o">○</b>.
+            Каждая собранная линия приносит очки, а ее клетки блокируются навсегда. Побеждает тот,
+            у кого очков больше — поэтому партия почти никогда не заканчивается вничью.
+          </p>
+
+          <ul class="facts">
+            <li><b>3</b> подряд — минимум для очка</li>
+            <li><b>4</b> подряд — уже 2 очка</li>
+            <li><b>5</b> подряд — сразу 3 очка</li>
+          </ul>
+
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#game">Сыграть партию</a>
+            <a class="btn btn--ghost" href="#rules">Как это работает</a>
+          </div>
+        </div>
+
+        <div class="game-card" id="game">
+          <div class="game-card__head">
+            <span class="game-card__round" id="round">Партия № 1</span>
+            <span class="game-card__left">свободных клеток: <b id="cells-left">25</b></span>
+          </div>
+
+          <div class="scoreboard">
+            <div class="score-card score-card--x" id="score-card-x">
+              <span class="score-card__who"><span class="mark mark--x" aria-hidden="true">✕</span> Вы</span>
+              <span class="score-card__value" id="score-x">0</span>
+            </div>
+            <span class="scoreboard__sep" aria-hidden="true">:</span>
+            <div class="score-card score-card--o" id="score-card-o">
+              <span class="score-card__who"><span class="mark mark--o" aria-hidden="true">○</span> Компьютер</span>
+              <span class="score-card__value" id="score-o">0</span>
+            </div>
+          </div>
+
+          <div class="board-wrap">
+            <div
+              class="board"
+              id="board"
+              role="group"
+              aria-label="Игровое поле 5 на 5. Стрелки — перемещение, Enter — ход."
+            ></div>
+            <div class="overlay" id="board-overlay" hidden>
+              <div class="overlay__card">
+                <p class="overlay__title" id="result-title">Победа!</p>
+                <p class="overlay__text" id="result-text">Счет 4 : 3</p>
+                <button class="btn btn--primary" type="button" id="btn-again">Ещё партия</button>
+              </div>
+            </div>
+          </div>
+
+          <p class="status" id="status" role="status" aria-live="polite">Ваш ход: поставьте ✕ на поле.</p>
+
+          <div class="game-actions">
+            <button class="btn btn--primary" type="button" id="btn-new">Новая партия</button>
+            <span class="legend">
+              <span class="legend__item"><span class="mark mark--x" aria-hidden="true">✕</span> вы</span>
+              <span class="legend__item"><span class="mark mark--o" aria-hidden="true">○</span> компьютер</span>
+              <span class="legend__item legend__item--dead">зачеркнуто — недоступно</span>
+            </span>
+          </div>
+
+          <div class="series">
+            <span class="series__title">Серия партий</span>
+            <span class="series__item series__item--win">побед: <b id="series-wins">0</b></span>
+            <span class="series__item">ничьих: <b id="series-draws">0</b></span>
+            <span class="series__item series__item--loss">поражений: <b id="series-losses">0</b></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ПРАВИЛА -->
+      <section class="section wrap" id="rules">
+        <h2>Правила за 30 секунд</h2>
+        <p class="section__lead">
+          Знакомая механика крестиков-ноликов, но поле больше, а линия после зачета выбывает из игры.
+        </p>
+
+        <div class="rules">
+          <article class="rule">
+            <div class="rule__diagram">
+              <div class="mini" data-mini="x11 x12 x13 o0 o24" aria-hidden="true"></div>
+            </div>
+            <h3>Три подряд — очко</h3>
+            <p>
+              Как только три ваших символа встали в один ряд, линия засчитывается: вы получаете
+              <b>1 очко</b> за каждую тройку.
+            </p>
+          </article>
+
+          <article class="rule">
+            <div class="rule__diagram">
+              <div class="mini" data-mini="x0 x6 x12 o4 o20 o24" aria-hidden="true"></div>
+            </div>
+            <h3>Восемь направлений</h3>
+            <p>
+              Считаются горизонтали, вертикали и обе диагонали. Решетка 5×5 дает
+              <b>48 различных троек</b> — почти всегда есть куда расти.
+            </p>
+          </article>
+
+          <article class="rule">
+            <div class="rule__diagram">
+              <div class="mini" data-mini="b11 b12 b13 x3 x21 o7" aria-hidden="true"></div>
+            </div>
+            <h3>Зачеркнутое выбывает навсегда</h3>
+            <p>
+              Клетки засчитанной линии блокируются: ни вы, ни компьютер больше не сможете туда
+              походить. Поле буквально тает — это и есть главный ресурс партии.
+            </p>
+          </article>
+
+          <article class="rule">
+            <div class="rule__diagram rule__diagram--text">
+              <span class="turn-demo"><b class="mark-x">✕</b><span class="turn-demo__arrow">→</span><b class="mark-o">○</b><span class="turn-demo__arrow">→</span><b class="mark-x">✕</b></span>
+            </div>
+            <h3>Ходы строго по очереди</h3>
+            <p>
+              Очко <b>не дает</b> дополнительного хода: собрав линию, вы сразу передаете ход
+              сопернику. Вы всегда играете первым.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ОЧКИ -->
+      <section class="section wrap" id="scoring">
+        <h2>Сколько очков дает линия</h2>
+        <p class="section__lead">
+          Очко начисляется за каждую тройку внутри линии: линия длиной <b>L</b> содержит
+          <b>L − 2</b> троек.
+        </p>
+
+        <div class="scoring">
+          <table class="table">
+            <caption class="visually-hidden">Таблица начисления очков</caption>
+            <thead>
+              <tr>
+                <th scope="col">Линия</th>
+                <th scope="col">Пример</th>
+                <th scope="col">Очки</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>3 в ряд</td>
+                <td class="trio"><span>✕</span><span>✕</span><span>✕</span></td>
+                <td><b>1</b></td>
+              </tr>
+              <tr>
+                <td>4 в ряд</td>
+                <td class="trio"><span>○</span><span>○</span><span>○</span><span>○</span></td>
+                <td><b>2</b></td>
+              </tr>
+              <tr>
+                <td>5 в ряд</td>
+                <td class="trio"><span>✕</span><span>✕</span><span>✕</span><span>✕</span><span>✕</span></td>
+                <td><b>3</b></td>
+              </tr>
+              <tr>
+                <td>Крест: два ряда одним ходом</td>
+                <td>
+                  <div class="mini mini--inline" data-mini="x10 x11 x12 x2 x7" aria-hidden="true"></div>
+                </td>
+                <td><b>2</b></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <aside class="callout">
+            <h3>Почему это интереснее классики</h3>
+            <ul>
+              <li>Поле 5×5 и порог в три символа — ничьи почти невозможны, счет идет до конца.</li>
+              <li>Каждая засчитанная линия <b>уменьшает</b> поле: выгодно не только брать очки, но и
+                грамотно расходовать место.</li>
+              <li>Линия из 4–5 символов — самый быстрый способ уйти в отрыв.</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <!-- СТРАТЕГИЯ -->
+      <section class="section wrap" id="strategy">
+        <h2>Как обыграть компьютер</h2>
+        <p class="section__lead">
+          Соперник играет на среднем уровне: он забирает свои линии, закрывает ваши и старается не
+          разменивать очко на два. Но он считает только на один ход вперед — этим и пользуйтесь.
+        </p>
+
+        <ol class="tips">
+          <li>
+            <h3>Стройте кресты, а не прямые</h3>
+            <p>Две линии через одну клетку дают сразу 2 очка, и закрыть их одним ходом почти нельзя.</p>
+          </li>
+          <li>
+            <h3>Не отдавайте центр</h3>
+            <p>Через центральную клетку проходит 12 троек — больше, чем через любую другую.</p>
+          </li>
+          <li>
+            <h3>Держите двойную угрозу</h3>
+            <p>Если у вас два места для очка, компьютер успеет закрыть только одно.</p>
+          </li>
+          <li>
+            <h3>Считайте место</h3>
+            <p>Зачеркнутые линии исчезают. Иногда выгоднее закрыть чужую линию, чем взять свою.</p>
+          </li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap site-footer__inner">
+        <p>
+          <b>Линия 5×5</b> — демо-лэндинг с играбельным первым экраном. Ванильный JavaScript,
+          без сборки и зависимостей: страница работает даже при открытии файла напрямую.
+        </p>
+        <p class="site-footer__meta">
+          <a href="#game">Сыграть ещё раз</a>
+          <span aria-hidden="true">·</span>
+          <a href="#top">Наверх</a>
+        </p>
+      </div>
+    </footer>
+
+    <script src="assets/js/rules.js"></script>
+    <script src="assets/js/ai.js"></script>
+    <script src="assets/js/ui.js"></script>
+  </body>
+</html>

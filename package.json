@@ -1,0 +1,19 @@
+{
+  "name": "ttt-5x5-landing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Мини-лэндинг с игрой «Линия 5x5»: три в ряд зачеркиваются, клетки блокируются, счёт по очкам. Игра против компьютера.",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test --test-isolation=none tests/rules.test.js tests/ai.test.js tests/ui-contract.test.js tests/dom.test.js",
+    "test:logic": "node --test --test-isolation=none tests/rules.test.js tests/ai.test.js",
+    "test:ui": "node --test --test-isolation=none tests/ui-contract.test.js tests/dom.test.js",
+    "check": "node --check assets/js/rules.js && node --check assets/js/ai.js && node --check assets/js/ui.js",
+    "stats": "node tools/selfplay-stats.cjs",
+    "visual": "node tools/visual-check.cjs",
+    "encoding": "node tools/encoding-check.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.2"
+  }
+}

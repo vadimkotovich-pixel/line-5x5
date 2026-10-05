@@ -1,0 +1,8 @@
+# Зависимости нужны только для тестов (jsdom); сама страница работает без них.
+node_modules/
+.pnpm-store/
+
+# Харнессы для визуальной проверки: генерируются `npm run visual`.
+_visual-check.html
+_narrow-check.html
+_shots/

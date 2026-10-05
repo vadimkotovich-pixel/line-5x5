@@ -1,0 +1,7 @@
+# Текстовые файлы — с переводами строк LF, чтобы репозиторий одинаково
+# выглядел на Windows, macOS и Linux.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
